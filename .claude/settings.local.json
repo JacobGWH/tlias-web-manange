@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql:*)",
+      "Bash(java:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(mvn dependency:tree -Dincludes=com.fasterxml.jackson.datatype:*)",
+      "Bash(mvn dependency:tree -Dincludes='com.fasterxml.jackson.datatype::')",
+      "Bash(mvn dependency:resolve:*)",
+      "Bash(mvn compile:*)",
+      "Bash(gh --version)",
+      "Bash(gh auth:*)",
+      "Bash(ssh:*)",
+      "Bash(ssh-keyscan -t rsa,dsa,ecdsa,ed25519 github.com)",
+      "Bash(ssh-keyscan github.com)",
+      "Bash(git init:*)",
+      "Bash(git config:*)",
+      "Bash(gh repo:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+#配置数据库的连接信息
+spring:
+  application:
+    name: tlias-web-management
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql.vihao.top:3306/tlias
+    username: root
+    password: n)f_fDx-bZy5V
+  Jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
+# 配置mybatis日志输出
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true # 开启驼峰命名（数据库字段，封装实体类属性之间）
+    cache-enabled: false  # 禁用缓存便于调试
+# 指定xml映射配置文件的位置(字节码路径) -- 自定义路径（默认是resources下，不用配置）
+# mybaits.mapper-locations: classpath:mapper/*.xml
+
+# 配置log日志
+logging:
+    level:
+        org.springframework.jdbc.support.JdbcTransactionManager: debug

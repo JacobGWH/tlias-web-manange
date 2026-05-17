@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.EmpExprMapper">
+
+    <insert id="insertBatch">
+        INSERT INTO emp_expr (emp_id,begin,end,company,job) VALUES
+        <foreach collection="exprList" item="item" separator=",">
+            (#{item.empId},#{item.begin},#{item.end},#{item.company},#{item.job})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByEmpIds">
+        delete from emp_expr where emp_id in
+        <foreach collection="ids" item="emp_id" separator="," close=")" open="(">
+            #{emp_id}
+        </foreach>
+    </delete>
+</mapper>
