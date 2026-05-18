@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Options;
 import org.example.pojo.Emp;
 import org.example.pojo.EmpQueryParam;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -49,4 +48,9 @@ public interface EmpMapper {
      * 批量删除员工
      */
     void deleteByIds(List<Integer> ids);
+
+    Emp getById(Integer id);
+
+    // 更新员工基本信息表字段
+    void updateById(Emp emp);
 }

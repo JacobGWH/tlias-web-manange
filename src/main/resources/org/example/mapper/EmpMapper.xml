@@ -28,4 +28,55 @@
             </if>
         </where>
     </select>
+
+    <resultMap id="empWithExprResultMap" type="org.example.pojo.Emp">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="phone" column="phone"/>
+        <result property="job" column="job"/>
+        <result property="salary" column="salary"/>
+        <result property="image" column="image"/>
+        <result property="entryDate" column="entry_date"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deptName" column="deptName"/>
+        <collection property="exprList" ofType="org.example.pojo.EmpExpr">
+            <id property="id" column="expr_id"/>
+            <result property="empId" column="emp_id"/>
+            <result property="begin" column="expr_begin"/>
+            <result property="end" column="expr_end"/>
+            <result property="company" column="company"/>
+            <result property="job" column="expr_job"/>
+        </collection>
+    </resultMap>
+
+    <select id="getById" resultMap="empWithExprResultMap">
+        select e.*,
+               ex.id as expr_id, ex.emp_id, ex.begin as expr_begin, ex.end as expr_end, ex.company, ex.job as expr_job
+        from emp e
+        left join emp_expr ex on e.id = ex.emp_id
+        where e.id = #{id}
+    </select>
+
+    <update id="updateById">
+        update emp
+        <set>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="job != null and job != ''">job = #{job},</if>
+            <if test="salary != null">salary = #{salary},</if>
+            <if test="image != null and image != ''">image = #{image},</if>
+            <if test="entryDate != null">entry_date = #{entryDate},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
 </mapper>
