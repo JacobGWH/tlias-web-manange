@@ -1,7 +1,5 @@
 package org.example.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.example.mapper.EmpExprMapper;
@@ -15,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,10 +28,6 @@ public class EmpServiceImp implements EmpService {
 
     @Autowired
     private EmpLogService empLogService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     /**
      * 1. 原始方式 实现分页查询
      */
@@ -89,30 +85,47 @@ public class EmpServiceImp implements EmpService {
                 empExprMapper.insertBatch(emp.getExprList());
             }
             //3. 记录成功日志
-            empLogService.insertLog(new EmpLog(null, LocalDateTime.now(), "保存员工信息成功: " + objectToJson(emp)));
+            empLogService.insertLog(new EmpLog(null, LocalDateTime.now(), "保存员工信息成功: " + emp));
         } catch (Exception e) {
             //4. 记录失败日志
-            empLogService.insertLog(new EmpLog(null, LocalDateTime.now(), "保存员工信息失败: " + objectToJson(emp) + ", 错误: " + e.getMessage()));
+            empLogService.insertLog(new EmpLog(null, LocalDateTime.now(), "保存员工信息失败: " + emp + ", 错误: " + e.getMessage()));
             throw e;
         }
 
     }
 
-    /**
-     * 将对象转换为JSON字符串
-     */
-    private String objectToJson(Object obj) {
-        try {
-            return objectMapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            return obj.toString();
-        }
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Integer> ids) {
         empMapper.deleteByIds(ids);
         empExprMapper.deleteByEmpIds(ids);
+    }
+
+    @Override
+    public Emp get(Integer id) {
+       Emp emp = empMapper.getById(id);
+       return emp;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void update(Emp emp) {
+        //1. 更新员工基本信息
+        emp.setUpdateTime(LocalDateTime.now());
+        empMapper.updateById(emp);
+
+        //2.1 删除员工工作经历
+        empExprMapper.deleteByEmpIds(Arrays.asList(emp.getId()));
+
+        //2.2 新增员工工作经历
+        //判断当前工作经历是否存在，如果不存在就不用在调用insertBatch方法了
+        if (!CollectionUtils.isEmpty(emp.getExprList())) {
+            //获取并写入工作经历的对象的emp_id字段
+          //  emp.getExprList().forEach(expr -> expr.setEmpId(emp.getId()));
+            empExprMapper.insertBatch(emp.getExprList());
+        }
+
+
     }
 }
